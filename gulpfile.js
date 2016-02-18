@@ -17,7 +17,7 @@ var gulpif        = require('gulp-if');
 var uncss         = require('gulp-uncss');
 var useref        = require('gulp-useref');
 var cssnano       = require('gulp-cssnano');
-var htmlmin    = require('gulp-htmlmin');
+var htmlmin		  = require('gulp-htmlmin');
 var concat        = require('gulp-concat');
 var uglify        = require('gulp-uglify');
 var eslint        = require('gulp-eslint');
@@ -70,6 +70,7 @@ gulp.task('styles', function() {
     'bb >= 10'
   ];
   return gulp.src([
+    'app/styles/**/*.scss',
     'app/styles/**/*.css'
   ])
   .pipe(newer('.tmp/styles'))
@@ -88,7 +89,7 @@ gulp.task('styles', function() {
 // Concatenate and minify JavaScript.
 gulp.task('scripts', function() {
     gulp.src([
-      './app/scripts/main.js'
+      './app/scripts/**/*.js'
       // List all other scripts
     ])
       .pipe(newer('.tmp/scripts'))
@@ -116,7 +117,17 @@ gulp.task('html', function() {
     // In case you are still using useref build blocks
     .pipe(gulpif('*.css', cssnano()))
     // Minify any HTML
-    .pipe(gulpif('*.html', htmlmin()))
+    .pipe(gulpif('*.html', htmlmin({
+      removeComments: true,
+      collapseWhitespace: true,
+      collapseBooleanAttributes: true,
+      removeAttributeQuotes: true,
+      removeRedundantAttributes: true,
+      removeEmptyAttributes: true,
+      removeScriptTypeAttributes: true,
+      removeStyleLinkTypeAttributes: true,
+      removeOptionalTags: true
+    })))
     // Output files
     .pipe(gulpif('*.html', size({title: 'html', showFiles: true})))
     .pipe(gulp.dest('dist'));
